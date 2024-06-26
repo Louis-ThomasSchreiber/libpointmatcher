@@ -81,6 +81,29 @@ public:
 
         return generatePointCloudWithRandomDescAndTime(randFeat);
 	}
+
+    DP generatePlanarDataPoints(int nbPointsPerDirection)
+    {
+        const int dimFeatures = 4;
+        const int nbPoints = nbPointsPerDirection * nbPointsPerDirection;
+
+        PM::Matrix feat;
+        feat.resize(dimFeatures, nbPoints);
+        for(int i = 0; i < nbPointsPerDirection; ++i)
+        {
+            for(int j = 0; j < nbPointsPerDirection; ++j)
+            {
+                int col = i*nbPointsPerDirection+j;
+                feat(0, col) = i;
+                feat(1, col) = j;
+                feat(2, col) = 0;
+                feat(3, col) = 1;
+            }
+        }
+
+        return generatePointCloudWithRandomDescAndTime(feat);
+    }
+
 };
 
 TEST_F(DataFilterTest, IdentityDataPointsFilter)
@@ -1029,4 +1052,38 @@ TEST_F(DataFilterTest, AddDescriptorDataPointsFilter)
 
 	addFilter("AddDescriptorDataPointsFilter", params);
 	validate3dTransformation();
+}
+
+namespace { // anonymous namespace to prevent access outside this file
+
+DP filterUsingMinSurfaceVariation(const DP& cloud)
+{
+    std::shared_ptr<PM::DataPointsFilter> densityFilter =
+        PM::get().DataPointsFilterRegistrar.create(
+            "SurfaceNormalDataPointsFilter", {{"knn", "8"},
+                                              {"epsilon", "5"},
+                                              {"keepNormals", "0"},
+                                              {"keepEigenValues", "1"},
+                                              {"keepDensities", "0"}});
+
+    std::shared_ptr<PM::DataPointsFilter> minSurfaceVariationSubsample =
+        PM::get().DataPointsFilterRegistrar.create(
+            "MinSurfaceVariationDataPointsFilter", {{"minSurfaceVariation", toParam(0.002)}});
+
+
+    DP result = densityFilter->filter(cloud);
+    minSurfaceVariationSubsample->inPlaceFilter(result);
+    return result;
+}
+
+}
+
+TEST_F(DataFilterTest, givenPlanarPointCloud_whenFilteringWithMinSurfaceVariation_thenResultIsEmpty)
+{
+    const DP planar(generatePlanarDataPoints(10));
+
+    const DP filteredWithSurfaceVariation = filterUsingMinSurfaceVariation(planar);
+
+    const int nbPointsOut = filteredWithSurfaceVariation.features.cols();
+    EXPECT_EQ(nbPointsOut, 0);
 }
