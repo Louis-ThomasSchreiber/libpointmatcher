@@ -1,0 +1,13 @@
+Description of the results obtained with executable: libpointmatcher/build/examples/min_surface_variation_filter
+
+argument: 'path_to_chin/chin.ply'
+
+Input: chin.ply
+       chin.jpg
+       (is a subset of the stanford bunny and can be found here: http://www.graphics.stanford.edu/data/3Dscanrep/)
+
+This subset was choosen for the exemple because it has obvious planar section in the surface.
+
+Output: chin_filtered_with_surface_variation.jpg
+        chin_filtered_with_surface_variation.ply
+
