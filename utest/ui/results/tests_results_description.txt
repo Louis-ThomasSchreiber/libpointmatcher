@@ -1,0 +1,17 @@
+Tests results
+
+ply files can be open with Meshlab (free sofware)
+
+Test1: givenPlanarPointCloud_whenFilteringWithMinSurfaceVariation_thenResultIsEmpty
+
+	Input: FilteringWithMinSurfaceVariationPlanar.jpg
+	       FilteringWithMinSurfaceVariationPlanarInput.ply
+	Output: Empty
+
+Test2: givenTwoFacesPointCloud_whenFilteringWithMinSurfaceVariation_thenResultIsTheEdge
+
+	Input: FilteringWithMinSurfaceVariationTwoFacesInput.jpg
+	       FilteringWithMinSurfaceVariationTwoFacesInput.ply
+
+	Output: FilteringWithMinSurfaceVariationTwoFacesOutput.jpg
+	        FilteringWithMinSurfaceVariationTwoFacesOutput.ply
