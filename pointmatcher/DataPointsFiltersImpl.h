@@ -44,6 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "DataPointsFilters/BoundingBox.h"
 #include "DataPointsFilters/MaxQuantileOnAxis.h"
 #include "DataPointsFilters/MaxDensity.h"
+#include "DataPointsFilters/MinSurfaceVariation.h"
 #include "DataPointsFilters/SurfaceNormal.h"
 #include "DataPointsFilters/SamplingSurfaceNormal.h"
 #include "DataPointsFilters/OrientNormals.h"
@@ -78,6 +79,7 @@ struct DataPointsFiltersImpl
 	typedef ::BoundingBoxDataPointsFilter<T> BoundingBoxDataPointsFilter;
 	typedef ::MaxQuantileOnAxisDataPointsFilter<T> MaxQuantileOnAxisDataPointsFilter;
 	typedef ::MaxDensityDataPointsFilter<T> MaxDensityDataPointsFilter;
+    typedef ::MinSurfaceVariationDataPointsFilter<T> MinSurfaceVariationDataPointsFilter;
 	typedef ::SurfaceNormalDataPointsFilter<T> SurfaceNormalDataPointsFilter;
 	typedef ::SamplingSurfaceNormalDataPointsFilter<T> SamplingSurfaceNormalDataPointsFilter;
 	typedef ::OrientNormalsDataPointsFilter<T>  OrientNormalsDataPointsFilter;
