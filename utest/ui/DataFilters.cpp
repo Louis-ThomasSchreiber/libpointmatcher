@@ -43,31 +43,43 @@ public:
 		icp.readingDataPointsFilters.push_back(testedDataPointFilter);
 	}
 
+    DP::Labels typical3DFeatLabels()
+    {
+        DP::Labels featLabels;
+        featLabels.push_back(DP::Label("x", 1));
+        featLabels.push_back(DP::Label("y", 1));
+        featLabels.push_back(DP::Label("z", 1));
+        featLabels.push_back(DP::Label("pad", 1));
+        return featLabels;
+    }
+
+    DP generatePointCloudWithRandomDescAndTime(const PM::Matrix& features)
+    {
+        const int nbPoints = features.cols();
+        const int dimDescriptors = 3;
+        const int dimTime = 2;
+
+        PM::Matrix randDesc = PM::Matrix::Random(dimDescriptors, nbPoints);
+        DP::Labels descLabels;
+        descLabels.push_back(DP::Label("dummyDesc", 3));
+
+        PM::Int64Matrix randTimes = PM::Int64Matrix::Random(dimTime, nbPoints);
+        DP::Labels timeLabels;
+        timeLabels.push_back(DP::Label("dummyTime", 2));
+
+        DP pointCloud = DP(features, typical3DFeatLabels(), randDesc, descLabels, randTimes, timeLabels);
+        return pointCloud;
+    }
+
 	DP generateRandomDataPoints(int nbPoints = 100)
 	{
 		const int dimFeatures = 4;
 		const int dimDescriptors = 3;
 		const int dimTime = 2;
 
-		PM::Matrix randFeat = PM::Matrix::Random(dimFeatures, nbPoints);
-		DP::Labels featLabels;
-		featLabels.push_back(DP::Label("x", 1));
-		featLabels.push_back(DP::Label("y", 1));
-		featLabels.push_back(DP::Label("z", 1));
-		featLabels.push_back(DP::Label("pad", 1));
+        const PM::Matrix randFeat = PM::Matrix::Random(dimFeatures, nbPoints);
 
-		PM::Matrix randDesc = PM::Matrix::Random(dimDescriptors, nbPoints);
-		DP::Labels descLabels;
-		descLabels.push_back(DP::Label("dummyDesc", 3));
-
-		PM::Int64Matrix randTimes = PM::Int64Matrix::Random(dimTime, nbPoints);
-		DP::Labels timeLabels;
-		timeLabels.push_back(DP::Label("dummyTime", 2));
-
-		// Construct the point cloud from the generated matrices
-		DP pointCloud = DP(randFeat, featLabels, randDesc, descLabels, randTimes, timeLabels);
-
-		return pointCloud;
+        return generatePointCloudWithRandomDescAndTime(randFeat);
 	}
 };
 
