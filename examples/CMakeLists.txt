@@ -5,6 +5,9 @@ install(TARGETS pmicp RUNTIME DESTINATION bin)
 add_executable(icp_simple icp_simple.cpp)
 target_link_libraries(icp_simple pointmatcher)
 
+add_executable(min_surface_variation_filter min_surface_variation_filter.cpp)
+target_link_libraries(min_surface_variation_filter pointmatcher)
+
 add_executable(align_sequence align_sequence.cpp)
 target_link_libraries(align_sequence pointmatcher)
 
