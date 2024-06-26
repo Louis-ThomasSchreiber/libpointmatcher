@@ -104,6 +104,41 @@ public:
         return generatePointCloudWithRandomDescAndTime(feat);
     }
 
+    DP generate2FacesDataPoints(int nbPointsPerDirection)
+    {
+        const int dimFeatures = 4;
+        const int nbPointsFace1 = nbPointsPerDirection * nbPointsPerDirection;
+        const int nbPointsFace2 = (nbPointsPerDirection-1) * nbPointsPerDirection;
+        const int nbPoints = nbPointsFace1 + nbPointsFace2;
+
+        PM::Matrix feat;
+        feat.resize(dimFeatures, nbPoints);
+        for(int x = 0; x < nbPointsPerDirection; ++x)
+        {
+            for(int y = 0; y < nbPointsPerDirection; ++y)
+            {
+                int col = x*nbPointsPerDirection+y;
+                feat(0, col) = x;
+                feat(1, col) = y;
+                feat(2, col) = 0;
+                feat(3, col) = 1;
+            }
+        }
+
+        for(int z = 1; z < nbPointsPerDirection; ++z)
+        {
+            for(int y = 0; y < nbPointsPerDirection; ++y)
+            {
+                int col = nbPointsFace1 + (z-1)*nbPointsPerDirection + y;
+                feat(0, col) = 0;
+                feat(1, col) = y;
+                feat(2, col) = z;
+                feat(3, col) = 1;
+            }
+        }
+
+        return generatePointCloudWithRandomDescAndTime(feat);
+    }
 };
 
 TEST_F(DataFilterTest, IdentityDataPointsFilter)
@@ -1086,4 +1121,16 @@ TEST_F(DataFilterTest, givenPlanarPointCloud_whenFilteringWithMinSurfaceVariatio
 
     const int nbPointsOut = filteredWithSurfaceVariation.features.cols();
     EXPECT_EQ(nbPointsOut, 0);
+}
+
+TEST_F(DataFilterTest, givenTwoFacesPointCloud_whenFilteringWithMinSurfaceVariation_thenResultIsTheEdge)
+{
+    const int numberOfPointsPerDimension = 10;
+    const DP twoFaces(generate2FacesDataPoints(numberOfPointsPerDimension));
+
+    const DP filteredWithSurfaceVariation = filterUsingMinSurfaceVariation(twoFaces);
+
+    const int nbPointsOut = filteredWithSurfaceVariation.features.cols();
+    // expect three rows of points, the edge + the two rows adjacent to the edge:
+    EXPECT_EQ(nbPointsOut, 3*numberOfPointsPerDimension);
 }
